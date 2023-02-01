@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.tvOS;
 
 public class Ball : MonoBehaviour
@@ -32,6 +33,8 @@ public class Ball : MonoBehaviour
         started = true;
     }
 
+    
+
     private void OnCollisionEnter2D(Collision2D col)
     {
         var normal = col.contacts[0].normal;
@@ -44,12 +47,24 @@ public class Ball : MonoBehaviour
         {
             _currentHeading.y = -_currentHeading.y;
         }
+        
 
         var board = col.gameObject.GetComponent<Board>();
         if (board != null)
         {
             _currentHeading.x += board.GetMovement() * 5f;
             _currentHeading = _currentHeading.normalized;
+            if (Mathf.Abs(_currentHeading.x) > Math.Abs(_currentHeading.y))
+            {
+                if (_currentHeading.x < 0)
+                {
+                    _currentHeading = new Vector2(-1, 1).normalized;
+                }
+                else
+                {
+                    _currentHeading = new Vector2(1, 1).normalized;
+                }
+            }
         }
     }
 }
